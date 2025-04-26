@@ -30,9 +30,7 @@
 
 // subscriber function
 import type { SubscriberArgs, SubscriberConfig } from "@medusajs/framework";
-console.log(
-  `The product was created-------------------------------------------------------------------`
-);
+
 export default async function productCreateHandler({
   event,
 }: SubscriberArgs<{ id: string }>) {
