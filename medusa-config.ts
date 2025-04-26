@@ -82,6 +82,9 @@ module.exports = defineConfig({
         ],
       },
     },
+    {
+      resolve: "./src/modules/blog",
+    },
   ],
   admin: {
     disable: process.env.DISABLE_MEDUSA_ADMIN === "true",
