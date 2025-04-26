@@ -5,12 +5,11 @@ export default async function productCreatedHandler({
   event: { data },
   container,
 }: SubscriberArgs<{ id: string }>) {
-  console.log("🟢 Event received");
-
   const notificationModuleService = container.resolve(Modules.NOTIFICATION);
   const productModuleService = container.resolve(Modules.PRODUCT);
 
   const product = await productModuleService.retrieveProduct(data.id);
+  console.log(`🟢Product: ${product.id} was created🟢`);
   await notificationModuleService.createNotifications({
     to: "y953159141@gmail.com",
     channel: "email",
