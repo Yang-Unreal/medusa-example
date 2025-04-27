@@ -8,7 +8,7 @@ export default async function productCreatedHandler({
 }: SubscriberArgs<{ id: string }>) {
   const { result } = await myWorkflow(container).run({
     input: {
-      name: "John",
+      name: "🟢John🟢",
     },
   });
 
@@ -26,7 +26,6 @@ export default async function productCreatedHandler({
     template: "product-created",
     data: {
       product_title: product.title,
-      product_image: product.images[0]?.url,
     },
   });
 }
