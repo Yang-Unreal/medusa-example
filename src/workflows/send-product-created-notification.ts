@@ -24,7 +24,7 @@ export const sendProductCreatedNotificationWorkflow = createWorkflow(
 
     const notification = sendNotificationStep([
       {
-        to: "y953159141@gmail.com", // Replace with actual admin email
+        to: "y953159141@gmail.com",
         channel: "email",
         template: "product-created",
         data: {

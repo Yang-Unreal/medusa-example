@@ -13,26 +13,26 @@ export default async function productCreatedHandler({
     },
   });
 
-  const { result } = await myWorkflow(container).run({
-    input: {
-      name: "🟢John🟢",
-    },
-  });
+  // const { result } = await myWorkflow(container).run({
+  //   input: {
+  //     name: "🟢John🟢",
+  //   },
+  // });
 
-  console.log(result);
+  // console.log(result);
 
-  const notificationModuleService = container.resolve(Modules.NOTIFICATION);
-  const productModuleService = container.resolve(Modules.PRODUCT);
+  // const notificationModuleService = container.resolve(Modules.NOTIFICATION);
+  // const productModuleService = container.resolve(Modules.PRODUCT);
 
-  const product = await productModuleService.retrieveProduct(data.id);
-  console.log(`🟢Product: ${product.id} was created🟢`);
+  // const product = await productModuleService.retrieveProduct(data.id);
+  // console.log(`🟢Product: ${product.id} was created🟢`);
 
-  await notificationModuleService.createNotifications({
-    to: "y953159141@gmail.com",
-    channel: "email",
-    template: "product-created",
-    data,
-  });
+  // await notificationModuleService.createNotifications({
+  //   to: "y953159141@gmail.com",
+  //   channel: "email",
+  //   template: "product-created",
+  //   data,
+  // });
 }
 export const config: SubscriberConfig = {
   event: "product.created",
