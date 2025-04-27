@@ -23,27 +23,7 @@ export function ProductCreatedEmailComponent({
       <Heading>New Product Created Successfully</Heading>
       <Container>
         <Section style={{ padding: "20px 0" }}>
-          <Row>
-            <Column>
-              <Text style={{ fontSize: "16px", fontWeight: "bold" }}>
-                Product Details:
-              </Text>
-              <Text>Title: {product.title}</Text>
-              <Text>Status: {product.status}</Text>
-              {product.description && (
-                <Text>Description: {product.description}</Text>
-              )}
-            </Column>
-            {product.thumbnail && (
-              <Column>
-                <Img
-                  src={product.thumbnail}
-                  alt={product.title}
-                  width="200px"
-                />
-              </Column>
-            )}
-          </Row>
+          <Text>Product ID: {product.id}</Text>
         </Section>
       </Container>
     </Html>
