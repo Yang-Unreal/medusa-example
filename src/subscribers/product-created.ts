@@ -24,9 +24,7 @@ export default async function productCreatedHandler({
     to: "y953159141@gmail.com",
     channel: "email",
     template: "product-created",
-    data: {
-      product_id: product.id,
-    },
+    data,
   });
 }
 export const config: SubscriberConfig = {

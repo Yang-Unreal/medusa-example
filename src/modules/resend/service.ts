@@ -59,7 +59,8 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
 
   constructor({ logger }: InjectedDependencies, options: ResendOptions) {
     super();
-
+    console.log(options.api_key);
+    console.log(options.from);
     this.resendClient = new Resend(options.api_key);
     this.options = options;
     this.logger = logger;
@@ -94,6 +95,8 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
     notification: ProviderSendNotificationDTO
   ): Promise<ProviderSendNotificationResultsDTO> {
     const template = this.getTemplate(notification.template as Templates);
+
+    console.log(notification);
 
     if (!template) {
       this.logger.error(
@@ -132,21 +135,19 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
       };
     }
 
-    // if (typeof template === "string") {
-    //   emailOptions.html = template;
-    // } else {
-    //   emailOptions.react = template(notification.data);
-    //   // delete emailOptions.html;
-    // }
-
-    const { data, error } = await this.resendClient.emails.send(emailOptions);
+    const { data, error } = await this.resendClient.emails.send({
+      from: "Yang <yang@limingcn.com>",
+      to: ["delivered@resend.dev"],
+      subject: "hello world",
+      html: "<p>it works!</p>",
+    });
 
     if (error) {
       this.logger.error(`Failed to send email`, error);
       return {};
     }
 
-    return { id: data!.id };
+    return { id: data?.id };
   }
 }
 
