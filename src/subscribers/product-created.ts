@@ -25,7 +25,7 @@ export default async function productCreatedHandler({
     channel: "email",
     template: "product-created",
     data: {
-      product_title: product.title,
+      product_id: product.id,
     },
   });
 }
