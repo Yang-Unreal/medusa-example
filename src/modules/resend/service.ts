@@ -3,13 +3,21 @@ import {
   MedusaError,
 } from "@medusajs/framework/utils";
 import {
-  Logger,
   ProviderSendNotificationDTO,
   ProviderSendNotificationResultsDTO,
+  Logger,
 } from "@medusajs/framework/types";
 import { Resend, CreateEmailOptions } from "resend";
-// import { orderPlacedEmail } from "./emails/product-placed";
 import { productCreatedEmail } from "./emails/product-created";
+
+enum Templates {
+  PRODUCT_CREATED = "product-created",
+}
+
+const templates: { [key in Templates]?: (props: unknown) => React.ReactNode } =
+  {
+    [Templates.PRODUCT_CREATED]: productCreatedEmail,
+  };
 
 type ResendOptions = {
   api_key: string;
@@ -27,20 +35,18 @@ type InjectedDependencies = {
   logger: Logger;
 };
 
-enum Templates {
-  PRODUCT_CREATED = "product-created",
-}
-
-const templates: { [key in Templates]?: (props: unknown) => React.ReactNode } =
-  {
-    [Templates.PRODUCT_CREATED]: productCreatedEmail,
-  };
-
 class ResendNotificationProviderService extends AbstractNotificationProviderService {
   static identifier = "notification-resend";
   private resendClient: Resend;
   private options: ResendOptions;
   private logger: Logger;
+
+  constructor({ logger }: InjectedDependencies, options: ResendOptions) {
+    super();
+    this.resendClient = new Resend(options.api_key);
+    this.options = options;
+    this.logger = logger;
+  }
 
   static validateOptions(options: Record<any, any>) {
     if (!options.api_key) {
@@ -55,15 +61,6 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
         "Option `from` is required in the provider's options."
       );
     }
-  }
-
-  constructor({ logger }: InjectedDependencies, options: ResendOptions) {
-    super();
-    console.log(options.api_key);
-    console.log(options.from);
-    this.resendClient = new Resend(options.api_key);
-    this.options = options;
-    this.logger = logger;
   }
 
   getTemplate(template: Templates) {
@@ -107,47 +104,67 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
       return {};
     }
 
-    let emailOptions: CreateEmailOptions;
-    const baseOptions = {
+    const commonOptions = {
       from: this.options.from,
       to: [notification.to],
       subject: this.getTemplateSubject(notification.template as Templates),
     };
+
+    let emailOptions: CreateEmailOptions;
+    if (typeof template === "string") {
+      emailOptions = {
+        ...commonOptions,
+        html: template,
+      };
+    } else {
+      emailOptions = {
+        ...commonOptions,
+        react: template(notification.data),
+      };
+    }
+    // const baseOptions = {
+    //   from: this.options.from,
+    //   to: [notification.to],
+    //   subject: this.getTemplateSubject(notification.template as Templates),
+    // };
 
     // const emailOptions: CreateEmailOptions = {
     //   from: this.options.from,
     //   to: [notification.to],
     //   subject: this.getTemplateSubject(notification.template as Templates),
     //   html: "",
-
     // };
-    if (typeof template === "string") {
-      // Create the full object with 'html' here
-      emailOptions = {
-        ...baseOptions,
-        html: template, // Fulfills RequireAtLeastOne
-      };
-    } else {
-      // Create the full object with 'react' here
-      emailOptions = {
-        ...baseOptions,
-        react: template(notification.data), // Fulfills RequireAtLeastOne
-      };
-    }
+    // if (typeof template === "string") {
+    //   emailOptions = {
+    //     ...baseOptions,
+    //     html: template,
+    //   };
+    // } else {
 
-    const { data, error } = await this.resendClient.emails.send({
-      from: "Yang <yang@limingcn.com>",
-      to: ["delivered@resend.dev"],
-      subject: "hello world",
-      html: "<p>it works!</p>",
-    });
+    //   emailOptions = {
+    //     ...baseOptions,
+    //     react: template(notification.data),
+    //   };
+    // }
 
-    if (error) {
-      this.logger.error(`Failed to send email`, error);
+    // const { data, error } = await this.resendClient.emails.send({
+    //   from: "Yang <yang@limingcn.com>",
+    //   to: notification.to,
+    //   subject: "hello world",
+    //   html: "<p>it works!</p>",
+    // });
+    const { data, error } = await this.resendClient.emails.send(emailOptions);
+
+    if (error || !data) {
+      if (error) {
+        this.logger.error("Failed to send email", error);
+      } else {
+        this.logger.error("Failed to send email: unknown error");
+      }
       return {};
     }
 
-    return { id: data?.id };
+    return { id: data.id };
   }
 }
 

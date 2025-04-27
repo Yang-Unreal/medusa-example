@@ -10,21 +10,13 @@ type WorkflowInput = {
   id: string;
 };
 
-// type Product = {
-//   id: string;
-//   title: string;
-//   description?: string;
-//   status: string;
-//   thumbnail?: string;
-// };
-
 export const sendProductCreatedNotificationWorkflow = createWorkflow(
   "send-product-created-notification",
   ({ id }: WorkflowInput) => {
     // @ts-ignore
     const { data: products } = useQueryGraphStep({
       entity: "product",
-      fields: ["id", "title", "description", "status", "thumbnail"],
+      fields: ["id", "title", "description", "status"],
       filters: {
         id,
       },

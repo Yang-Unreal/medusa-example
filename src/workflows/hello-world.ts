@@ -14,7 +14,7 @@ const step1 = createStep("step-1", async () => {
 });
 
 const step2 = createStep("step-2", async ({ name }: WorkflowInput) => {
-  return new StepResponse(`Hello ${name} from step two!`);
+  return new StepResponse(`Workflow Test: Hello ${name} from step two!`);
 });
 
 const myWorkflow = createWorkflow(

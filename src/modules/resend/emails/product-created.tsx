@@ -24,6 +24,7 @@ export function ProductCreatedEmailComponent({
       <Container>
         <Section style={{ padding: "20px 0" }}>
           <Text>Product ID: {product.id}</Text>
+          <Text>Product Title: {product.title}</Text>
         </Section>
       </Container>
     </Html>

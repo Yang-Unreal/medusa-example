@@ -1,11 +1,18 @@
 import type { SubscriberArgs, SubscriberConfig } from "@medusajs/framework";
 import { Modules } from "@medusajs/framework/utils";
 import myWorkflow from "../workflows/hello-world";
+import { sendProductCreatedNotificationWorkflow } from "../workflows/send-product-created-notification";
 
 export default async function productCreatedHandler({
   event: { data },
   container,
 }: SubscriberArgs<{ id: string }>) {
+  await sendProductCreatedNotificationWorkflow(container).run({
+    input: {
+      id: data.id,
+    },
+  });
+
   const { result } = await myWorkflow(container).run({
     input: {
       name: "🟢John🟢",
@@ -30,21 +37,3 @@ export default async function productCreatedHandler({
 export const config: SubscriberConfig = {
   event: "product.created",
 };
-
-// import type { SubscriberArgs, SubscriberConfig } from "@medusajs/framework";
-
-// console.log(
-//   `---------------------------------------The subscriber was init---------------------------------------`
-// );
-// export default async function productCreateHandler({
-//   event,
-// }: SubscriberArgs<{ id: string }>) {
-//   const productId = event.data.id;
-//   console.log(
-//     `---------------------------------------The product ${productId} was created---------------------------------------`
-//   );
-// }
-
-// export const config: SubscriberConfig = {
-//   event: "product.created",
-// };
