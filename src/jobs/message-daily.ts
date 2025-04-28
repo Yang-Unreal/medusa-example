@@ -1,17 +1,10 @@
-import { MedusaContainer } from "@medusajs/framework/types";
-import myWorkflow from "../workflows/hello-world";
-
-export default async function myCustomJob(container: MedusaContainer) {
-  const { result } = await myWorkflow(container).run({
-    input: {
-      name: "🟢Job Test🟢🟢🟢🟢🟢",
-    },
-  });
-
-  console.log(result.message);
+export default async function myCustomJob() {
+  console.log("I'll be executed three times only.🎉🎉🎉🎉🎉🎉");
 }
 
 export const config = {
-  name: "run-once-a-day",
-  schedule: `0 0 * * *`,
+  name: "hello-world",
+  // execute every minute
+  schedule: "* * * * *",
+  numberOfExecutions: 3,
 };
